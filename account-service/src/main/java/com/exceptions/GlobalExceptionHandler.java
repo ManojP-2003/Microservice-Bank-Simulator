@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AccountInactiveException.class)
-    public ResponseEntity<Object> handleAccountInactive(AccountInactiveException ex, WebRequest request) {
+    public ResponseEntity<Object> handleInactive(AccountInactiveException ex, WebRequest request) {
         return createErrorResponse(ex.getMessage(), "ACCOUNT_INACTIVE", HttpStatus.BAD_REQUEST);
     }
 

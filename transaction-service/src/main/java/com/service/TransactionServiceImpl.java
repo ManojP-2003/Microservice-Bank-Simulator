@@ -53,9 +53,14 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Transaction deposit(String accountNumber, double amount) {
+
         validateAmount(amount);
 
-        accountServiceClient.updateBalance(accountNumber, amount);
+        try {
+            accountServiceClient.updateBalance(accountNumber, amount);
+        } catch (Exception ex) {
+            throw ex; // let FeignErrorDecoder convert this to proper exception
+        }
 
         Transaction t = new Transaction();
         t.setTransactionId(generateTxId());
@@ -66,17 +71,22 @@ public class TransactionServiceImpl implements TransactionService {
         t.setSourceAccount(accountNumber);
 
         repo.save(t);
-
         notify("Deposit of " + amount + " to " + accountNumber + " successful");
 
         return t;
     }
 
+
     @Override
     public Transaction withdraw(String accountNumber, double amount) {
+
         validateAmount(amount);
 
-        accountServiceClient.updateBalance(accountNumber, -amount);
+        try {
+            accountServiceClient.updateBalance(accountNumber, -amount);
+        } catch (Exception ex) {
+            throw ex; // FEIGN WILL HANDLE INVALID, INACTIVE, INSUFFICIENT
+        }
 
         Transaction t = new Transaction();
         t.setTransactionId(generateTxId());
@@ -87,22 +97,27 @@ public class TransactionServiceImpl implements TransactionService {
         t.setSourceAccount(accountNumber);
 
         repo.save(t);
-
         notify("Withdrawal of " + amount + " from " + accountNumber + " successful");
 
         return t;
     }
 
+
     @Override
     public Transaction transfer(String from, String to, double amount) {
+
         validateAmount(amount);
 
         if (from.equals(to)) {
             throw new InvalidAmountException("Cannot transfer to same account");
         }
 
-        accountServiceClient.updateBalance(from, -amount);
-        accountServiceClient.updateBalance(to, amount);
+        try {
+            accountServiceClient.updateBalance(from, -amount);
+            accountServiceClient.updateBalance(to, amount);
+        } catch (Exception ex) {
+            throw ex; // FEIGN WILL HANDLE ERRORS
+        }
 
         Transaction t = new Transaction();
         t.setTransactionId(generateTxId());
@@ -114,7 +129,6 @@ public class TransactionServiceImpl implements TransactionService {
         t.setDestinationAccount(to);
 
         repo.save(t);
-
         notify("Transferred " + amount + " from " + from + " to " + to);
 
         return t;

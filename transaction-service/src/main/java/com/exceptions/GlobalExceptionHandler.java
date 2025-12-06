@@ -3,7 +3,7 @@ package com.exceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;  // Change to RestControllerAdvice
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
@@ -26,6 +26,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccountNotFoundException.class)
     public ResponseEntity<Object> handleAccountNotFound(AccountNotFoundException ex, WebRequest request) {
         return createErrorResponse(ex.getMessage(), "ACCOUNT_NOT_FOUND", HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AccountInactiveException.class)
+    public ResponseEntity<Object> handleInactive(AccountInactiveException ex, WebRequest request) {
+        return createErrorResponse(ex.getMessage(), "ACCOUNT_INACTIVE", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidAccountDataException.class)
+    public ResponseEntity<Object> handleInvalidAccountData(InvalidAccountDataException ex, WebRequest request) {
+        return createErrorResponse(ex.getMessage(), "INVALID_ACCOUNT_DATA", HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InsufficientBalanceException.class)

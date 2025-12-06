@@ -20,16 +20,20 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private String generateUniqueAccountNumber(String holderName) {
+
         if (holderName == null || holderName.trim().isEmpty()) {
             throw new InvalidAccountDataException("Holder name cannot be empty");
         }
 
         String initials = holderName.replaceAll("[^A-Za-z]", "");
+
         if (initials.length() < 2) {
             throw new InvalidAccountDataException("Holder name must contain at least 2 letters");
         }
 
-        initials = initials.length() >= 3 ? initials.substring(0, 3).toUpperCase() : initials.toUpperCase();
+        initials = initials.length() >= 3
+                ? initials.substring(0, 3).toUpperCase()
+                : initials.toUpperCase();
 
         String accountNumber;
         do {
@@ -40,8 +44,10 @@ public class AccountServiceImpl implements AccountService {
         return accountNumber;
     }
 
+
     @Override
     public Account createAccount(Account account) {
+
         logger.info("Creating account for: {}", account.getHolderName());
 
         if (account.getHolderName() == null || account.getHolderName().trim().isEmpty()) {
@@ -55,7 +61,7 @@ public class AccountServiceImpl implements AccountService {
         if (account.getAccountNumber() != null && !account.getAccountNumber().isEmpty()) {
             Account existing = repo.findByAccountNumber(account.getAccountNumber());
             if (existing != null) {
-                throw new AccountAlreadyExistsException(account.getAccountNumber());
+                throw new AccountAlreadyExistsException("Account already exists: " + account.getAccountNumber());
             }
         }
 
@@ -67,8 +73,10 @@ public class AccountServiceImpl implements AccountService {
         return repo.save(account);
     }
 
+
     @Override
     public Account getAccountByNumber(String accountNumber) {
+
         logger.info("Fetching account: {}", accountNumber);
 
         if (accountNumber == null || accountNumber.trim().isEmpty()) {
@@ -76,62 +84,74 @@ public class AccountServiceImpl implements AccountService {
         }
 
         Account account = repo.findByAccountNumber(accountNumber);
+
         if (account == null) {
-            throw new AccountNotFoundException(accountNumber);
+            throw new AccountNotFoundException("Account not found: " + accountNumber);
         }
+
         return account;
     }
 
+
     @Override
     public Account updateBalance(String accountNumber, double amount) {
-        logger.info("Updating balance for account: {} by amount: {}", accountNumber, amount);
+
+        logger.info("Updating balance for account: {} by {}", accountNumber, amount);
 
         Account acc = repo.findByAccountNumber(accountNumber);
+
         if (acc == null) {
-            throw new AccountNotFoundException(accountNumber);
+            throw new AccountNotFoundException("Account not found: " + accountNumber);
         }
 
         if (!"ACTIVE".equals(acc.getStatus())) {
-            throw new AccountInactiveException(accountNumber);
+            throw new AccountInactiveException("Account is inactive: " + accountNumber);
         }
 
         double newBalance = acc.getBalance() + amount;
 
         if (newBalance < 0) {
-            throw new InsufficientBalanceException(accountNumber);
+            throw new InsufficientBalanceException("Insufficient balance: " + accountNumber);
         }
 
         acc.setBalance(newBalance);
         return repo.save(acc);
     }
 
+
     @Override
     public Account updateStatus(String accountNumber, String status) {
-        logger.info("Updating status for account: {} to {}", accountNumber, status);
+
+        logger.info("Updating status for {} to {}", accountNumber, status);
+
         if (!"ACTIVE".equals(status) && !"INACTIVE".equals(status)) {
-            throw new InvalidAccountDataException("Status must be 'ACTIVE' or 'INACTIVE'");
+            throw new InvalidAccountDataException("Invalid status: " + status);
         }
 
         Account acc = repo.findByAccountNumber(accountNumber);
+
         if (acc == null) {
-            throw new AccountNotFoundException(accountNumber);
+            throw new AccountNotFoundException("Account not found: " + accountNumber);
         }
 
         acc.setStatus(status);
         return repo.save(acc);
     }
 
+
     @Override
     public boolean deleteAccount(String accountNumber) {
+
         logger.info("Deleting account: {}", accountNumber);
 
         Account acc = repo.findByAccountNumber(accountNumber);
+
         if (acc == null) {
-            throw new AccountNotFoundException(accountNumber);
+            throw new AccountNotFoundException("Account not found: " + accountNumber);
         }
 
         if (acc.getBalance() > 0) {
-            throw new InvalidAccountDataException("Cannot delete account with positive balance");
+            throw new InvalidAccountDataException("Cannot delete account with positive balance: " + accountNumber);
         }
 
         repo.delete(acc);

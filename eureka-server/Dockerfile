@@ -1,4 +1,5 @@
-FROM eclipse-temurin:17-jdk
-ADD target/eureka-server.jar eureka-server.jar
+FROM azul/zulu-openjdk:17
+WORKDIR /app
+COPY target/eureka-server-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8761
-ENTRYPOINT ["java","-jar","eureka-server.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]

@@ -1,0 +1,87 @@
+services:
+
+  mongo:
+    image: mongo:6.0
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - banking-network
+
+  eureka-server:
+    build: ./eureka-server
+    image: eureka-server-img
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - banking-network
+
+  account-service:
+    build: ./account-service
+    image: account-service-img
+    container_name: account-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - banking-network
+    depends_on:
+      - mongo
+      - eureka-server
+
+  transaction-service:
+    build: ./transaction-service
+    image: transaction-service-img
+    container_name: transaction-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - banking-network
+    depends_on:
+      - mongo
+      - eureka-server
+      - account-service
+
+  notification-service:
+    build: ./notification-service
+    image: notification-service-img
+    container_name: notification-service
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - banking-network
+    depends_on:
+      - eureka-server
+
+  api-gateway:
+    build: ./api-gateway
+    image: api-gateway-img
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - banking-network
+    depends_on:
+      - account-service
+      - transaction-service
+      - notification-service
+      - eureka-server
+
+volumes:
+  mongo_data:
+
+networks:
+  banking-network:
+    driver: bridge

@@ -1,4 +1,5 @@
-FROM eclipse-temurin:17-jdk
-ADD target/notification-service.jar notification-service.jar
+FROM azul/zulu-openjdk:17
+WORKDIR /app
+COPY target/notification-service-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8083
-ENTRYPOINT ["java", "-jar", "notification-service.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=docker"]

@@ -1,4 +1,5 @@
-FROM eclipse-temurin:17-jdk
-ADD target/transaction-service.jar transaction-service.jar
+FROM azul/zulu-openjdk:17
+WORKDIR /app
+COPY target/transaction-service-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8082
-ENTRYPOINT ["java", "-jar", "transaction-service.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=docker"]

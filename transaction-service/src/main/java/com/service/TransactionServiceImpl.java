@@ -1,17 +1,16 @@
 package com.service;
 
-import com.client.AccountClient;
-import com.client.NotificationClient;
+import com.client.AccountServiceClient;
+import com.client.NotificationServiceClient;
 import com.model.Transaction;
 import com.repository.TransactionRepository;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import com.exceptions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -19,25 +18,47 @@ public class TransactionServiceImpl implements TransactionService {
     private static final Logger logger = LoggerFactory.getLogger(TransactionServiceImpl.class);
 
     private final TransactionRepository repo;
-    private final AccountClient accountClient;
-    private final NotificationClient notificationClient;
+    private final AccountServiceClient accountServiceClient;
+    private final NotificationServiceClient notificationServiceClient;
 
     public TransactionServiceImpl(TransactionRepository repo,
-                                  AccountClient accountClient,
-                                  NotificationClient notificationClient) {
+                                  AccountServiceClient accountServiceClient,
+                                  NotificationServiceClient notificationServiceClient) {
         this.repo = repo;
-        this.accountClient = accountClient;
-        this.notificationClient = notificationClient;
+        this.accountServiceClient = accountServiceClient;
+        this.notificationServiceClient = notificationServiceClient;
+    }
+
+    private String generateTxId() {
+        String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
+        int random = (int) (Math.random() * 900) + 100;
+        return "TXN-" + date + "-" + random;
+    }
+
+    private void validateAmount(double amount) {
+        if (amount <= 0) {
+            throw new InvalidAmountException("Amount must be positive");
+        }
+    }
+
+    private void notify(String message) {
+        Map<String, String> body = new HashMap<>();
+        body.put("message", message);
+        try {
+            notificationServiceClient.sendNotification(body);
+        } catch (Exception e) {
+            logger.warn("Notification failed: {}", e.getMessage());
+        }
     }
 
     @Override
-    @CircuitBreaker(name = "accountService", fallbackMethod = "fallback")
     public Transaction deposit(String accountNumber, double amount) {
+        validateAmount(amount);
 
-        accountClient.updateBalance(accountNumber, amount);
+        accountServiceClient.updateBalance(accountNumber, amount);
 
         Transaction t = new Transaction();
-        t.setTransactionId(UUID.randomUUID().toString());
+        t.setTransactionId(generateTxId());
         t.setType("DEPOSIT");
         t.setAmount(amount);
         t.setTimestamp(new Date());
@@ -45,19 +66,20 @@ public class TransactionServiceImpl implements TransactionService {
         t.setSourceAccount(accountNumber);
 
         repo.save(t);
-        notificationClient.sendNotification("Deposit successful");
+
+        notify("Deposit of " + amount + " to " + accountNumber + " successful");
 
         return t;
     }
 
     @Override
-    @CircuitBreaker(name = "accountService", fallbackMethod = "fallback")
     public Transaction withdraw(String accountNumber, double amount) {
+        validateAmount(amount);
 
-        accountClient.updateBalance(accountNumber, -amount);
+        accountServiceClient.updateBalance(accountNumber, -amount);
 
         Transaction t = new Transaction();
-        t.setTransactionId(UUID.randomUUID().toString());
+        t.setTransactionId(generateTxId());
         t.setType("WITHDRAW");
         t.setAmount(amount);
         t.setTimestamp(new Date());
@@ -65,20 +87,25 @@ public class TransactionServiceImpl implements TransactionService {
         t.setSourceAccount(accountNumber);
 
         repo.save(t);
-        notificationClient.sendNotification("Withdrawal successful");
+
+        notify("Withdrawal of " + amount + " from " + accountNumber + " successful");
 
         return t;
     }
 
     @Override
-    @CircuitBreaker(name = "accountService", fallbackMethod = "fallback")
     public Transaction transfer(String from, String to, double amount) {
+        validateAmount(amount);
 
-        accountClient.updateBalance(from, -amount);
-        accountClient.updateBalance(to, amount);
+        if (from.equals(to)) {
+            throw new InvalidAmountException("Cannot transfer to same account");
+        }
+
+        accountServiceClient.updateBalance(from, -amount);
+        accountServiceClient.updateBalance(to, amount);
 
         Transaction t = new Transaction();
-        t.setTransactionId(UUID.randomUUID().toString());
+        t.setTransactionId(generateTxId());
         t.setType("TRANSFER");
         t.setAmount(amount);
         t.setTimestamp(new Date());
@@ -87,25 +114,17 @@ public class TransactionServiceImpl implements TransactionService {
         t.setDestinationAccount(to);
 
         repo.save(t);
-        notificationClient.sendNotification("Transfer successful");
+
+        notify("Transferred " + amount + " from " + from + " to " + to);
 
         return t;
     }
 
     @Override
-    public List<Transaction> getTransactions(String accountNumber) {
-        return repo.findBySourceAccount(accountNumber);
-    }
-
-    public Transaction fallback(String accountNumber, double amount, Exception e) {
-        logger.error("Fallback triggered due to {}", e.getMessage());
-
-        Transaction t = new Transaction();
-        t.setTransactionId(UUID.randomUUID().toString());
-        t.setStatus("FAILED");
-        t.setTimestamp(new Date());
-        t.setType("ERROR");
-
-        return t;
+    public List<Transaction> getTransactions(String account) {
+        List<Transaction> result = new ArrayList<>();
+        result.addAll(repo.findBySourceAccount(account));
+        result.addAll(repo.findByDestinationAccount(account));
+        return result;
     }
 }

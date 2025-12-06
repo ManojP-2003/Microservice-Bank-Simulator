@@ -4,7 +4,44 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b5406229-9229-413d-8dba-2bae23f8fe4f" name="Changes" comment="" />
+    <list default="true" id="b5406229-9229-413d-8dba-2bae23f8fe4f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/NotificationServiceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/com/controllers/AccountController.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/com/controllers/AccountController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/com/main/AccountServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/com/main/AccountServiceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/com/model/Account.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/com/model/Account.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/com/service/AccountService.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/com/service/AccountService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/com/service/AccountServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/com/service/AccountServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/test/java/com/service/AccountServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/test/java/com/service/AccountServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/src/main/java/com/main/ApiGatewayApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/src/main/java/com/main/ApiGatewayApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka-server/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/eureka-server/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka-server/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/com/controllers/NotificationController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/com/main/NotificationServiceApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/com/service/NotificationService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/com/service/NotificationServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/test/java/com/main/NotificationServiceApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/transaction-service/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/transaction-service/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/transaction-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/transaction-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/transaction-service/src/main/java/com/client/AccountClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/transaction-service/src/main/java/com/client/NotificationClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/transaction-service/src/main/java/com/controllers/TransactionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/transaction-service/src/main/java/com/controllers/TransactionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/transaction-service/src/main/java/com/main/TransactionServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/transaction-service/src/main/java/com/main/TransactionServiceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/transaction-service/src/main/java/com/repository/TransactionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/transaction-service/src/main/java/com/repository/TransactionRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/transaction-service/src/main/java/com/service/TransactionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/transaction-service/src/main/java/com/service/TransactionServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/transaction-service/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/transaction-service/src/test/java/com/main/TransactionServiceApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/transaction-service/src/test/java/com/main/TransactionServiceApplicationTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/transaction-service/src/test/java/com/service/TransactionServiceImplTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/transaction-service/src/test/java/com/service/TransactionServiceImplTest.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -17,22 +54,39 @@
       </list>
     </option>
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 3
-}]]></component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
   <component name="ProjectId" id="35sf79Fb2gYB3CuaD0AeXGVMI0v" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Galaxy Computers/Desktop/Microservice Bank Simulator"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.AccountServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.ApiGatewayApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.EurekaServerApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.TransactionServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Galaxy Computers/Desktop/Microservice Bank Simulator&quot;
   }
-}]]></component>
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Galaxy Computers\Desktop\Microservice Bank Simulator\notification-service\src\main\java\com" />
+    </key>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="b5406229-9229-413d-8dba-2bae23f8fe4f" name="Changes" comment="" />

@@ -8,7 +8,7 @@ public interface AccountService {
 
     Account getAccountByNumber(String accountNumber);
 
-    Account updateBalance(String accountNumber, double balance);
+    Account updateBalance(String accountNumber, double amount);
 
     Account updateStatus(String accountNumber, String status);
 

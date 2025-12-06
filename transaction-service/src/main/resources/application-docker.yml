@@ -1,0 +1,24 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: transaction-service
+  data:
+    mongodb:
+      uri: mongodb://mongo:27017/transactions_db
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+logging:
+  level:
+    root: DEBUG
+    org.springframework: DEBUG
+    com: DEBUG

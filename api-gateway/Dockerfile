@@ -1,4 +1,5 @@
-FROM eclipse-temurin:17-jdk
-ADD target/api-gateway.jar api-gateway.jar
+FROM azul/zulu-openjdk:17
+WORKDIR /app
+COPY target/api-gateway-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","api-gateway.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=docker"]

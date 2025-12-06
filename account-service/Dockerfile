@@ -1,4 +1,5 @@
-FROM eclipse-temurin:17-jdk
-ADD target/account-service.jar account-service.jar
+FROM azul/zulu-openjdk:17
+WORKDIR /app
+COPY target/account-service-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8081
-ENTRYPOINT ["java", "-jar", "account-service.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=docker"]

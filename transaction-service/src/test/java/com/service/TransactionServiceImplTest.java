@@ -1,71 +1,146 @@
 package com.service;
 
-import com.client.AccountClient;
-import com.client.NotificationClient;
+import com.client.AccountServiceClient;
+import com.client.NotificationServiceClient;
 import com.model.Transaction;
 import com.repository.TransactionRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import java.util.Date;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-public class TransactionServiceImplTest {
+class TransactionServiceImplTest {
+
+    @Mock
+    private TransactionRepository repo;
+
+    @Mock
+    private AccountServiceClient accountServiceClient;
+
+    @Mock
+    private NotificationServiceClient notificationServiceClient;
+
+    @InjectMocks
+    private TransactionServiceImpl service;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
-    public void testDeposit() {
-        TransactionRepository repo = mock(TransactionRepository.class);
-        AccountClient accountClient = mock(AccountClient.class);
-        NotificationClient notificationClient = mock(NotificationClient.class);
+    void testDepositSuccess() {
+        String accountNumber = "ACC123";
+        double amount = 100.0;
 
-        TransactionServiceImpl service =
-                new TransactionServiceImpl(repo, accountClient, notificationClient);
+        Transaction savedTx = new Transaction();
+        savedTx.setTransactionId("TXN-TEST");
+        savedTx.setType("DEPOSIT");
+        savedTx.setAmount(amount);
+        savedTx.setStatus("SUCCESS");
 
-        Transaction result = service.deposit("A1001", 1000);
+        doNothing().when(accountServiceClient).updateBalance(accountNumber, amount);
+        when(repo.save(any(Transaction.class))).thenReturn(savedTx);
+        when(notificationServiceClient.sendNotification(anyMap())).thenReturn("OK");
+
+        Transaction result = service.deposit(accountNumber, amount);
 
         assertNotNull(result);
         assertEquals("DEPOSIT", result.getType());
-        assertEquals(1000, result.getAmount());
-        verify(accountClient, times(1)).updateBalance("A1001", 1000);
-        verify(notificationClient, times(1)).sendNotification("Deposit successful");
+        assertEquals(amount, result.getAmount());
+
+        verify(accountServiceClient).updateBalance(accountNumber, amount);
+        verify(repo).save(any(Transaction.class));
     }
 
     @Test
-    public void testWithdraw() {
-        TransactionRepository repo = mock(TransactionRepository.class);
-        AccountClient accountClient = mock(AccountClient.class);
-        NotificationClient notificationClient = mock(NotificationClient.class);
+    void testWithdrawSuccess() {
+        String accountNumber = "ACC123";
+        double amount = 50.0;
 
-        TransactionServiceImpl service =
-                new TransactionServiceImpl(repo, accountClient, notificationClient);
+        Transaction savedTx = new Transaction();
+        savedTx.setTransactionId("TXN-TEST");
+        savedTx.setType("WITHDRAW");
+        savedTx.setAmount(amount);
+        savedTx.setStatus("SUCCESS");
 
-        Transaction result = service.withdraw("A1001", 500);
+        doNothing().when(accountServiceClient).updateBalance(accountNumber, -amount);
+        when(repo.save(any(Transaction.class))).thenReturn(savedTx);
+        when(notificationServiceClient.sendNotification(anyMap())).thenReturn("OK");
+
+        Transaction result = service.withdraw(accountNumber, amount);
 
         assertNotNull(result);
         assertEquals("WITHDRAW", result.getType());
-        assertEquals(500, result.getAmount());
-        verify(accountClient, times(1)).updateBalance("A1001", -500);
-        verify(notificationClient, times(1)).sendNotification("Withdrawal successful");
+
+        verify(accountServiceClient).updateBalance(accountNumber, -amount);
+        verify(repo).save(any(Transaction.class));
     }
 
     @Test
-    public void testTransfer() {
-        TransactionRepository repo = mock(TransactionRepository.class);
-        AccountClient accountClient = mock(AccountClient.class);
-        NotificationClient notificationClient = mock(NotificationClient.class);
+    void testTransferSuccess() {
+        String from = "ACC123";
+        String to = "ACC456";
+        double amount = 75.0;
 
-        TransactionServiceImpl service =
-                new TransactionServiceImpl(repo, accountClient, notificationClient);
+        Transaction savedTx = new Transaction();
+        savedTx.setTransactionId("TXN-TEST");
+        savedTx.setType("TRANSFER");
+        savedTx.setAmount(amount);
+        savedTx.setStatus("SUCCESS");
 
-        Transaction result = service.transfer("A1001", "A2002", 300);
+        doNothing().when(accountServiceClient).updateBalance(from, -amount);
+        doNothing().when(accountServiceClient).updateBalance(to, amount);
+        when(repo.save(any(Transaction.class))).thenReturn(savedTx);
+        when(notificationServiceClient.sendNotification(anyMap())).thenReturn("OK");
+
+        Transaction result = service.transfer(from, to, amount);
 
         assertNotNull(result);
         assertEquals("TRANSFER", result.getType());
-        assertEquals("A1001", result.getSourceAccount());
-        assertEquals("A2002", result.getDestinationAccount());
-        verify(accountClient, times(1)).updateBalance("A1001", -300);
-        verify(accountClient, times(1)).updateBalance("A2002", 300);
-        verify(notificationClient, times(1)).sendNotification("Transfer successful");
+
+        verify(accountServiceClient).updateBalance(from, -amount);
+        verify(accountServiceClient).updateBalance(to, amount);
+        verify(repo).save(any(Transaction.class));
+    }
+
+    @Test
+    void testDepositInvalidAmount() {
+        assertThrows(com.exceptions.InvalidAmountException.class,
+                () -> service.deposit("ACC123", -100));
+    }
+
+    @Test
+    void testWithdrawInvalidAmount() {
+        assertThrows(com.exceptions.InvalidAmountException.class,
+                () -> service.withdraw("ACC123", 0));
+    }
+
+    @Test
+    void testTransferSameAccount() {
+        assertThrows(com.exceptions.InvalidAmountException.class,
+                () -> service.transfer("ACC123", "ACC123", 100));
+    }
+
+    @Test
+    void testGetTransactions() {
+        String accountNumber = "ACC123";
+        List<Transaction> expected = Arrays.asList(new Transaction(), new Transaction());
+
+        when(repo.findBySourceAccount(accountNumber)).thenReturn(expected);
+        when(repo.findByDestinationAccount(accountNumber)).thenReturn(Collections.emptyList());
+
+        List<Transaction> actual = service.getTransactions(accountNumber);
+
+        assertEquals(2, actual.size());
+        verify(repo).findBySourceAccount(accountNumber);
+        verify(repo).findByDestinationAccount(accountNumber);
     }
 }
